@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0A0A0A" />
+    <script>
+      /* Site is permanently dark — enforce it before first paint and clear any
+         stale saved choice left over from the removed light-mode toggle. */
+      try { window.localStorage.removeItem("theme"); } catch (e) {}
+      document.documentElement.setAttribute("data-theme", "dark");
+    </script>
+    <meta name="description" content="Jyotirmay Khare is a Full Stack Developer building real software products across frontend, backend, databases, cloud and interactive experiences — WaveBeats, TradeScope Pro, PriceRadar, LPU Navigator and more." />
+    <meta name="keywords" content="Jyotirmay Khare, Jyotirmay, Khare, Full Stack Developer, Frontend Developer, Backend Developer, React Developer, TypeScript, Python, PostgreSQL, MongoDB, Web Developer India, LPU, Portfolio" />
+    <meta name="author" content="Jyotirmay Khare" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Jyotirmay Khare — Full Stack Developer" />
+    <meta property="og:description" content="I build real software products across web, data, cloud and interactive experiences. Explore live projects, certifications and more." />
+    <meta property="og:url" content="https://jyotirmaykhare.dev/" />
+    <meta property="og:site_name" content="Jyotirmay Khare — Portfolio" />
+    <meta property="og:locale" content="en_IN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jyotirmay Khare — Full Stack Developer" />
+    <meta name="twitter:description" content="I build real software products across web, data, cloud and interactive experiences." />
+    <link rel="canonical" href="https://jyotirmaykhare.dev/" />
+    <title>Jyotirmay Khare — Full Stack Developer | Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Jyotirmay Khare",
+        "jobTitle": "Full Stack Developer",
+        "url": "https://jyotirmaykhare.dev/",
+        "email": "mailto:jyotirmaykhare@gmail.com",
+        "sameAs": [
+          "https://github.com/jyotirmaykhare",
+          "https://www.linkedin.com/in/jyotirmay-khare"
+        ],
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Lovely Professional University"
+        },
+        "knowsAbout": [
+          "React",
+          "TypeScript",
+          "JavaScript",
+          "Python",
+          "Flask",
+          "PostgreSQL",
+          "MongoDB",
+          "Node.js",
+          "Express",
+          "Frontend Development",
+          "Backend Development",
+          "Database Design",
+          "Cloud Deployment",
+          "Web Development",
+          "Full Stack Development"
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Jyotirmay Khare — Full Stack Developer Portfolio",
+        "url": "https://jyotirmaykhare.dev/",
+        "inLanguage": "en"
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

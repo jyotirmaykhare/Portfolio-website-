@@ -1,0 +1,663 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/*  Design tokens                                                      */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Brand typography — Space Grotesk (display) + Inter (sans/body) + IBM Plex Mono (code/tags) */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --font-display: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Hero-environment keyframes — must live inside @theme for Tailwind v4 */
+  --animate-he-pulse: he-pulse 2.4s ease-in-out infinite;
+  --animate-he-drip: he-drip 2.2s ease-in-out infinite;
+  --animate-he-float: he-float 7s ease-in-out infinite;
+  --animate-he-aurora-a: he-aurora-a 26s ease-in-out infinite;
+  --animate-he-aurora-b: he-aurora-b 34s ease-in-out infinite;
+
+  @keyframes he-aurora-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(6%, 5%, 0) scale(1.12);
+    }
+  }
+
+  @keyframes he-aurora-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1.08);
+    }
+    50% {
+      transform: translate3d(-7%, -4%, 0) scale(0.94);
+    }
+  }
+
+  @keyframes he-float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotateY(-7deg) rotateX(3deg);
+    }
+    50% {
+      transform: translate3d(0, -14px, 40px) rotateY(-10deg) rotateX(5deg);
+    }
+  }
+
+  @keyframes he-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes he-drip {
+    0% {
+      transform: scaleY(0.15);
+      opacity: 0;
+    }
+    45% {
+      transform: scaleY(1);
+      opacity: 0.85;
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+}
+
+:root {
+  --cWidth: calc(100% - 30px);
+  --cMaxWidth: 1720px;
+  --backgroundColor: #0a0a0a;
+  --accentColor: #5eead4;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --color-bg-dark: #0a0a0a;
+  --color-bg-light: #f5f5f3;
+  --color-text-primary-dark: #f5f5f3;
+  --color-text-primary-light: #0a0a0a;
+  /* AA-checked: 4.67:1 on --color-bg-light */
+  --color-text-muted: #6e6e73;
+  /* Brand accent — swap this single value to rebrand the whole site */
+  --color-accent: #0066ff;
+
+  /*
+   * Accessible derivatives of the brand palette.
+   * Raw #0066FF / #6E6E73 don't reach 4.5:1 on near-black surfaces, so
+   * text-sized accent/muted color is contextually mapped below while
+   * fills keep the pure brand hue (white ink passes on every fill).
+   */
+  --color-accent-on-dark: #4d9aff;     /* 6.9:1 on --color-bg-dark  */
+  --color-accent-on-light: #0050d7;    /* 6.1:1 on --color-bg-light */
+  --color-text-muted-on-dark: #98989d; /* 6.9:1 on --color-bg-dark  */
+
+  /* ---- Fluid type scale ------------------------------------------- */
+  --font-hero: clamp(3rem, 7vw, 6rem);
+  --font-h2: clamp(2rem, 4vw, 3rem);
+  --font-h3: clamp(1.25rem, 2vw, 1.75rem);
+  --font-body: 1rem;
+  --font-body-lg: 1.125rem;
+  --font-caption: 0.85rem;
+
+  /* ---- Runtime aliases · DARK context (default) -------------------- */
+  --bg: var(--color-bg-dark);
+  --bg-elevated: #131315;
+  --surface: #17171a;
+  --border: rgba(245, 245, 243, 0.1);
+  --border-strong: rgba(245, 245, 243, 0.18);
+  --text: var(--color-text-primary-dark);
+  --text-muted: var(--color-text-muted-on-dark);
+  --text-faint: #7c7c82;
+  --accent: var(--color-accent-on-dark);
+  --accent-strong: #338cff;
+  --accent-fill: var(--color-accent);       /* white ink = 4.8:1 ✓   */
+  --accent-fill-hover: #005ce0;             /* white ink = 5.8:1 ✓   */
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(0, 102, 255, 0.1);
+  --ring: rgba(77, 154, 255, 0.55);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 10px 30px -12px rgba(0, 0, 0, 0.65);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark; /* permanent dark UI — native widgets/scrollbars follow */
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-body);
+  line-height: 1.65;
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection {
+  background: var(--accent-fill);
+  color: #ffffff;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+/* Visible focus ring */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/*
+ * Heading system — tight tracking (-0.02em…-0.03em) and compact
+ * leading (0.95–1.1) for the bold Apple/Nike-style hierarchy.
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+h1 {
+  letter-spacing: -0.03em;
+}
+
+/* ---- Fluid type-scale utilities ----------------------------------- */
+
+.type-hero {
+  font-size: var(--font-hero);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.type-h2 {
+  font-size: var(--font-h2);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.type-h3 {
+  font-size: var(--font-h3);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* Utility classes */
+.text-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Key-phrase highlight — restrained: solid brand accent (was a gradient) */
+.text-gradient {
+  color: var(--accent);
+}
+
+/* Animated shine sweep for hero keyword phrases */
+.shine-text {
+  background: linear-gradient(
+    110deg,
+    var(--accent) 30%,
+    color-mix(in srgb, #ffffff 80%, var(--accent)) 50%,
+    var(--accent) 70%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: shine-sweep 5s linear infinite;
+}
+@keyframes shine-sweep {
+  from {
+    background-position: 200% center;
+  }
+  to {
+    background-position: -200% center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shine-text {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: var(--accent);
+  }
+}
+
+.font-mono-tag {
+  font-family: var(--font-mono);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Section bands — uniform dark rhythm                                */
+/*  Bands share the global dark tokens, so every component dropped     */
+/*  into a band stays consistent with the rest of the page.            */
+/* ------------------------------------------------------------------ */
+.section-band {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Frosted-glass surface — site-wide glassmorphism utility.
+   Tuned for the permanent near-black canvas: brighter top sheen,
+   hairline inner highlight, moderate blur (never animated). */
+.glass {
+  position: relative;
+  /* Stronger sheen so the frost is legible against the pure-black canvas
+     (matches the old white-band frosted contrast, now tuned for dark) */
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, #ffffff 16%, transparent),
+    color-mix(in srgb, #ffffff 6%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, #ffffff 22%, transparent);
+    box-shadow:
+    inset 0 1px 0 0 color-mix(in srgb, #ffffff 12%, transparent),
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 0 1px 1px color-mix(in srgb, #ffffff 8%, transparent),
+    0 0 26px 4px color-mix(in srgb, #ffffff 6%, transparent);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+}
+
+/* Cheap GPU lift for cards — animates transform/border-color only */
+.card-lift {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    box-shadow 0.35s ease;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+}
+
+/* Respect visitors who prefer reduced motion across all CSS animation */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.container-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .container-page {
+    padding-inline: 2rem;
+  }
+}
+
+/* Overline label above section headings */
+.overline-label {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Small uppercase category/caption label */
+.caption-label {
+  font-size: var(--font-caption);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Tech-stack pill badge — mono, uppercase, accent-tinted */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 0.42em 0.85em;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Animated underline — sweeps in from the left on hover */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.14em;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Card-title underline — same sweep, driven by a parent group hover */
+.title-underline {
+  position: relative;
+  display: inline-block;
+}
+.title-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.12em;
+  height: 2px;
+  width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .title-underline::after,
+.group:focus-visible .title-underline::after {
+  transform: scaleX(1);
+}
+
+/* Stats / metrics — oversized Inter 800 numerals with caption labels */
+.stat-value {
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.stat-label {
+  font-size: var(--font-caption);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Pull-quote / personal statement — readable measure, display voice */
+.pull-quote {
+  max-width: 65ch;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+/* Minimal underline-only form controls */
+.field-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: var(--font-caption);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.field-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
+  padding: 0.7rem 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-body);
+  color: var(--text);
+  transition: border-color 0.25s ease;
+}
+.field-input::placeholder {
+  color: var(--text-faint);
+}
+.field-input:focus {
+  outline: none;
+  border-bottom-color: var(--accent);
+  box-shadow: 0 1px 0 0 var(--accent);
+}
+
+/* Rounded, elevated card-style form fields (used on the contact page) */
+.field-input-rounded {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-sans);
+  font-size: var(--font-body);
+  color: var(--text);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.field-input-rounded::placeholder {
+  color: var(--text-faint);
+}
+.field-input-rounded:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.section-pad {
+  padding-block: clamp(4.5rem, 9vw, 8rem);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-faint);
+}
+
+/* Hide scrollbar for horizontal strips */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Offset anchored sections so the fixed header doesn't overlap them */
+section[id] {
+  scroll-margin-top: 4.5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Home page canvas — transparent dark field with a slow animated     */
+/*  gradient so motion is the star, not a flat black block. All       */
+/*  home sections/cards render over this; glass surfaces keep their     */
+/*  frosted borders/glow so they stay legible. Disabled automatically   */
+/*  for reduced-motion users via the global media query above.         */
+/* ------------------------------------------------------------------ */
+.home-canvas {
+  position: relative;
+  isolation: isolate;
+    background:
+            radial-gradient(1100px 420px at 18% 24%, color-mix(in srgb, var(--accent-soft) 20%, transparent)),
+    radial-gradient(1100px 420px at 86% 30%, color-mix(in srgb, #6fa8e8 12%, transparent)),
+    var(--bg);
+  background-size: 240% 240%;
+  animation: home-pan 55s ease-in-out infinite paused;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-canvas {
+    animation-play-state: running;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-canvas::before,
+  .home-canvas::after {
+    animation-play-state: running;
+  }
+}
+/* Colored aurora orbs across the full page (top → bottom) behind content */
+.home-canvas::before {
+  content: "";
+  position: fixed;
+  width: 460px;
+  height: 460px;
+  top: 4%;
+  left: 6%;
+  border-radius: 50%;
+      filter: blur(115px);
+  pointer-events: none;
+  z-index: -5;
+  background: radial-gradient(circle, color-mix(in srgb, #6fa8e8 34%, transparent), transparent 60%);
+  animation: home-orb-a 70s ease-in-out infinite paused;
+}
+.home-canvas::after {
+  content: "";
+  position: fixed;
+  width: 520px;
+  height: 520px;
+  bottom: 8%;
+  right: 10%;
+  border-radius: 50%;
+      filter: blur(115px);
+  pointer-events: none;
+  z-index: -5;
+  background: radial-gradient(circle, color-mix(in srgb, #b28cdb 28%, transparent), transparent 60%);
+  animation: home-orb-b 85s ease-in-out infinite paused;
+}
+@keyframes home-orb-a {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-40px, 34px) scale(1.08); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes home-orb-b {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(22px, -30px) scale(1.1); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes home-pan {
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* Home sections drop their solid black fills so content floats on the
+   animated canvas instead of sitting on opaque blocks. */
+.home-canvas .section-band {
+  background-color: transparent;
+}
+
+
+
+
+
+main.main-active {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+
+/* ------------------------------------------------------------------ */
+/*  Custom cursor (CustomCursor.tsx)                                    */
+/*  Dot + trailing ring; native cursor hidden only over interactive    */
+/*  targets on fine pointers, so text fields keep their caret.        */
+/* ------------------------------------------------------------------ */
+.custom-cursor-dot,
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  border-radius: 9999px;
+  will-change: transform;
+  z-index: 9999;
+  display: none;
+}
+.custom-cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: var(--accent);
+}
+.custom-cursor-ring {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  opacity: 0.55;
+  transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease,
+    opacity 0.2s ease, background-color 0.2s ease;
+}
+.custom-cursor-ring.is-hover {
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  opacity: 1;
+}
+.custom-cursor-ring.is-hidden {
+  opacity: 0;
+}
+@media (pointer: fine) {
+  .custom-cursor-active .custom-cursor-dot,
+  .custom-cursor-active .custom-cursor-ring {
+    display: block;
+  }
+  .custom-cursor-active a,
+  .custom-cursor-active button,
+  .custom-cursor-active [data-cursor],
+  .custom-cursor-active [role="button"] {
+    cursor: none;
+  }
+}
+
