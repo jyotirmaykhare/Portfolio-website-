@@ -1,24 +1,38 @@
+import type { CSSProperties, MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
   Award,
+  BookOpen,
   Cpu,
   Gamepad2,
+  Hammer,
   Lightbulb,
   Trophy,
   Users,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { certifications, experience } from "@/data/linkedin";
 import { projects } from "@/data/projects";
+import "@/styles/lab.css";
 
 /**
- * Other Projects — hardware / IoT work, game development and hackathons.
- * Content is sourced from the verified data layer (experience + hackathon
- * certification); nothing is invented.
+ * Other Projects — hardware / IoT work, game development and hackathons,
+ * presented in the same "aurora console" visual language as the Tech
+ * Projects page: drifting auroras, blueprint grid, accent-tinted glass
+ * cards with cursor spotlights. Content is sourced from the verified data
+ * layer; nothing is invented.
  */
+
+/** Cursor-tracked spotlight position for .lab-card surfaces. */
+function trackSpot(e: MouseEvent<HTMLElement>) {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty("--mx", `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
+  el.style.setProperty("--my", `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
+}
+
 export function OtherProjectsPage() {
   const others = projects.filter(
     (p) => !p.links.some((l) => l.href.includes("github.com"))
@@ -27,38 +41,86 @@ export function OtherProjectsPage() {
   const sih = experience.find((e) => e.title.includes("Smart India Hackathon"));
 
   return (
-    <div className="section-pad section-band">
-      <Container>
+    <div className="lab-page-shell section-pad">
+      {/* drifting auroras behind the content */}
+      <div
+        aria-hidden="true"
+        className="lab-aurora pointer-events-none absolute -left-24 -top-32 h-[420px] w-[420px] rounded-full bg-[#7c3aed]/20 blur-[130px]"
+      />
+      <div
+        aria-hidden="true"
+        className="lab-aurora pointer-events-none absolute -right-20 top-40 h-[380px] w-[380px] rounded-full bg-[#0066ff]/15 blur-[130px]"
+      />
+
+      <Container className="relative">
+        {/* ── Hero ─────────────────────────────────────────────── */}
         <Reveal>
-          <SectionHeading
-            eyebrow="Other projects"
-            title={
-              <>
-                Beyond the browser —{" "}
-                <span className="text-gradient">hardware, games & hackathons</span>
-              </>
-            }
-            description="Team engineering that doesn't live in a GitHub repo: Arduino and sensor work on real circuits, gameplay programming in Godot, and national-level hackathon builds."
-          />
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="overline-label text-[var(--accent)]">Other projects</p>
+              <h1 className="type-hero mt-5 text-[var(--text)]">
+                Beyond the{" "}
+                <span className="text-gradient">browser</span>
+              </h1>
+              <p className="mt-7 max-w-xl text-[length:var(--font-body-lg)] leading-[1.65] text-[var(--text-muted)]">
+                Team engineering that doesn't live in a GitHub repo: Arduino
+                and sensor work on real circuits, gameplay programming in
+                Godot, and national-level hackathon builds.
+              </p>
+            </div>
+
+            <div className="flex gap-3 lg:min-w-[380px]">
+              {[
+                { label: "Hackathons", value: "02", icon: Trophy },
+                { label: "Team builds", value: "02", icon: Users },
+                { label: "Hardware", value: "01", icon: Hammer },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="glass flex-1 rounded-2xl px-4 py-5 text-center"
+                >
+                  <s.icon
+                    className="mx-auto h-4 w-4 text-[var(--accent)]"
+                    aria-hidden="true"
+                  />
+                  <p className="mt-2.5 font-display text-2xl font-bold tabular-nums text-[var(--text)]">
+                    {s.value}
+                  </p>
+                  <p className="mt-1 font-mono-tag text-[10px] uppercase tracking-[0.12em] text-[var(--text-faint)]">
+                    {s.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </Reveal>
 
-        {/* ── Hackathons ─────────────────────────────────────────── */}
-        <section id="hackathons" className="mt-16 scroll-mt-24">
+        {/* ── 01 · Hackathons ──────────────────────────────────── */}
+        <section id="hackathons" className="mt-24 scroll-mt-24">
           <Reveal>
-            <h2 className="flex items-center gap-3 font-display text-2xl font-semibold text-[var(--text)]">
-              <Trophy className="h-6 w-6 text-[var(--accent)]" aria-hidden />
-              Hackathons
-            </h2>
+            <div className="flex items-center gap-4">
+              <span className="font-mono-tag text-[13px] font-medium text-[var(--accent)]">01</span>
+              <h2 className="flex items-center gap-3 font-display text-2xl font-semibold text-[var(--text)]">
+                <Trophy className="h-6 w-6 text-[var(--accent)]" aria-hidden />
+                Hackathons
+              </h2>
+              <span className="h-px flex-1 bg-[var(--border)]" aria-hidden="true" />
+            </div>
           </Reveal>
 
           <div className="mt-8 grid gap-6 lg:grid-cols-2">
             {/* Code-A-Haunt */}
             {hauntCert && (
               <Reveal className="h-full">
-                <article className="glass card-lift flex h-full flex-col rounded-2xl border border-[var(--accent)] p-7">
+                <article
+                  onPointerMove={trackSpot}
+                  style={{ "--card-accent": "#f59e0b" } as CSSProperties}
+                  className="lab-card card-lift flex h-full flex-col rounded-2xl p-7"
+                >
+                  <span className="lab-spotlight" aria-hidden="true" />
                   <div className="flex items-start justify-between gap-4">
-                    <Award className="h-6 w-6 shrink-0 text-[var(--accent)]" aria-hidden />
-                    <span className="rounded-full bg-[var(--accent-fill)] px-2.5 py-0.5 font-mono-tag text-[10px] uppercase tracking-[0.12em] text-white">
+                    <Award className="h-6 w-6 shrink-0 text-[#f59e0b]" aria-hidden />
+                    <span className="rounded-full bg-[#f59e0b]/15 px-2.5 py-0.5 font-mono-tag text-[10px] uppercase tracking-[0.12em] text-[#fbbf24]">
                       Certificate of Participation
                     </span>
                   </div>
@@ -105,8 +167,13 @@ export function OtherProjectsPage() {
             {/* Smart India Hackathon (internal round) */}
             {sih && (
               <Reveal delay={0.06} className="h-full">
-                <article className="glass card-lift flex h-full flex-col rounded-2xl p-7">
-                  <Cpu className="h-6 w-6 text-[var(--accent)]" aria-hidden />
+                <article
+                  onPointerMove={trackSpot}
+                  style={{ "--card-accent": "#a78bfa" } as CSSProperties}
+                  className="lab-card card-lift flex h-full flex-col rounded-2xl p-7"
+                >
+                  <span className="lab-spotlight" aria-hidden="true" />
+                  <Cpu className="h-6 w-6 text-[#a78bfa]" aria-hidden />
                   <h3 className="mt-5 font-display text-xl font-semibold leading-snug text-[var(--text)]">
                     Internal Hackathon — Smart India Hackathon 2025
                   </h3>
@@ -131,17 +198,26 @@ export function OtherProjectsPage() {
           </div>
         </section>
 
-        {/* ── Hardware & IoT ─────────────────────────────────────── */}
-        <section id="iot" className="mt-20 scroll-mt-24">
+        {/* ── 02 · Hardware & IoT ───────────────────────────────── */}
+        <section id="iot" className="mt-24 scroll-mt-24">
           <Reveal>
-            <h2 className="flex items-center gap-3 font-display text-2xl font-semibold text-[var(--text)]">
-              <Lightbulb className="h-6 w-6 text-[var(--accent)]" aria-hidden />
-              Hardware & IoT
-            </h2>
+            <div className="flex items-center gap-4">
+              <span className="font-mono-tag text-[13px] font-medium text-[var(--accent)]">02</span>
+              <h2 className="flex items-center gap-3 font-display text-2xl font-semibold text-[var(--text)]">
+                <Lightbulb className="h-6 w-6 text-[var(--accent)]" aria-hidden />
+                Hardware & IoT
+              </h2>
+              <span className="h-px flex-1 bg-[var(--border)]" aria-hidden="true" />
+            </div>
           </Reveal>
 
           <Reveal delay={0.05}>
-            <div className="glass mt-8 overflow-hidden rounded-2xl">
+            <div
+              onPointerMove={trackSpot}
+              style={{ "--card-accent": "#fbbf24" } as CSSProperties}
+              className="lab-card mt-8 overflow-hidden rounded-2xl"
+            >
+              <span className="lab-spotlight" aria-hidden="true" />
               <div className="grid lg:grid-cols-[1.3fr_1fr]">
                 <div className="p-7 sm:p-9">
                   <span className="caption-label">Team project</span>
@@ -208,42 +284,78 @@ export function OtherProjectsPage() {
           </Reveal>
         </section>
 
-        {/* ── Game development ───────────────────────────────────── */}
-        <section id="games" className="mt-20 scroll-mt-24">
+        {/* ── 03 · Game development & learning builds ────────────── */}
+        <section id="games" className="mt-24 scroll-mt-24">
           <Reveal>
-            <h2 className="flex items-center gap-3 font-display text-2xl font-semibold text-[var(--text)]">
-              <Gamepad2 className="h-6 w-6 text-[var(--accent)]" aria-hidden />
-              Game development
-            </h2>
+            <div className="flex items-center gap-4">
+              <span className="font-mono-tag text-[13px] font-medium text-[var(--accent)]">03</span>
+              <h2 className="flex items-center gap-3 font-display text-2xl font-semibold text-[var(--text)]">
+                <Gamepad2 className="h-6 w-6 text-[var(--accent)]" aria-hidden />
+                Game development & more
+              </h2>
+              <span className="h-px flex-1 bg-[var(--border)]" aria-hidden="true" />
+            </div>
           </Reveal>
 
           <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {others.map((project, i) => (
-              <Reveal key={project.slug} delay={i * 0.06} className="h-full">
-                <Link
-                  to={`/projects/${project.slug}`}
-                  className="card-lift group flex h-full flex-col rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-7 transition-colors hover:border-[var(--border-strong)]"
-                >
-                  <Gamepad2 className="h-6 w-6 text-[var(--accent)]" aria-hidden />
-                  <h3 className="mt-5 font-display text-lg font-semibold text-[var(--text)]">
-                    {project.name}
-                  </h3>
-                  <p className="mt-1 font-mono-tag text-[11px] uppercase tracking-wider text-[var(--text-faint)]">
-                    {project.category}
-                  </p>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--text-muted)]">
-                    {project.tagline}
-                  </p>
-                  <span className="mt-5 inline-flex items-center gap-1 text-[14px] font-medium text-[var(--accent)]">
-                    Case study
-                    <ArrowUpRight
-                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                      aria-hidden
-                    />
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
+            {others.map((project, i) => {
+              const isGame = project.category.toLowerCase().includes("game");
+              const Icon = isGame ? Gamepad2 : BookOpen;
+              return (
+                <Reveal key={project.slug} delay={i * 0.06} className="h-full">
+                  <Link
+                    to={`/projects/${project.slug}`}
+                    onPointerMove={trackSpot}
+                    style={{ "--card-accent": project.accent } as CSSProperties}
+                    className="lab-card card-lift group flex h-full flex-col rounded-2xl p-7"
+                  >
+                    <span className="lab-spotlight" aria-hidden="true" />
+                    <span
+                      className="lab-index pointer-events-none absolute -right-1 -top-5 text-[92px]"
+                      aria-hidden="true"
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <Icon className="h-6 w-6" style={{ color: project.accent }} aria-hidden />
+                    <h3 className="mt-5 font-display text-lg font-semibold text-[var(--text)]">
+                      <span className="title-underline">
+                        {project.name}
+                      </span>
+                    </h3>
+                    <p className="mt-1 font-mono-tag text-[11px] uppercase tracking-wider text-[var(--text-faint)]">
+                      {project.category}
+                    </p>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--text-muted)]">
+                      {project.tagline}
+                    </p>
+                    {project.metrics.length > 0 && (
+                      <div className="mt-5 grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--border)]">
+                        {project.metrics.slice(0, 3).map((m) => (
+                          <div
+                            key={m.label}
+                            className="bg-[var(--bg-elevated)] px-2 py-2.5 text-center"
+                          >
+                            <p className="font-mono-tag text-[13px] font-semibold text-[var(--text)]">
+                              {m.value}
+                            </p>
+                            <p className="mt-0.5 truncate font-mono-tag text-[9px] uppercase tracking-[0.1em] text-[var(--text-faint)]">
+                              {m.label}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <span className="mt-5 inline-flex items-center gap-1 text-[14px] font-medium text-[var(--accent)]">
+                      Case study
+                      <ArrowUpRight
+                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                        aria-hidden
+                      />
+                    </span>
+                  </Link>
+                </Reveal>
+              );
+            })}
           </div>
         </section>
 

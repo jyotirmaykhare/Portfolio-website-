@@ -1,14 +1,25 @@
 import { useState } from "react";
-import { BadgeCheck, CalendarDays, ExternalLink, Fingerprint, Sparkles } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, CalendarDays, ExternalLink, Fingerprint, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Modal, NeedsInput } from "@/components/linkedin/shared";
 import { certifications, certificationsMeta } from "@/data/linkedin";
 import type { Certification } from "@/types";
+import "@/styles/lab.css";
 
 const fmt = (iso: string | null) =>
   iso ? new Date(iso + (iso.length === 7 ? "-01" : "")).toLocaleDateString("en-US", { year: "numeric", month: "short" }) : null;
+
+const CARD_ACCENTS = ["#f59e0b", "#38bdf8", "#34d399", "#a78bfa"];
+
+/** Sets --mx/--my so the card spotlight follows the cursor. */
+function trackSpotlight(e: React.PointerEvent<HTMLElement>) {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+  el.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+}
 
 export function CertificationVault() {
   const [active, setActive] = useState<Certification | null>(null);
@@ -31,8 +42,14 @@ export function CertificationVault() {
         <div className="mt-10">
           {certifications.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {certifications.map((c) => (
-                <CertCard key={c.name} cert={c} onOpen={() => setActive(c)} />
+              {certifications.map((c, i) => (
+                <CertCard
+                  key={c.name}
+                  cert={c}
+                  index={i + 1}
+                  accent={CARD_ACCENTS[i % CARD_ACCENTS.length]}
+                  onOpen={() => setActive(c)}
+                />
               ))}
             </div>
           ) : (
@@ -47,48 +64,83 @@ export function CertificationVault() {
       </Container>
 
       <Modal open={active !== null} onClose={() => setActive(null)} labelledBy="cert-modal-title">
-        {active && <CertDetail cert={active} />}
+        {active && (
+          <CertDetail
+            cert={active}
+            accent={CARD_ACCENTS[Math.max(0, certifications.findIndex((c) => c.name === active.name)) % CARD_ACCENTS.length]}
+          />
+        )}
       </Modal>
     </section>
   );
 }
 
-function CertCard({ cert, onOpen }: { cert: Certification; onOpen: () => void }) {
+function CertCard({
+  cert,
+  index,
+  accent,
+  onOpen,
+}: {
+  cert: Certification;
+  index: number;
+  accent: string;
+  onOpen: () => void;
+}) {
   return (
     <button
       type="button"
       onClick={onOpen}
-      className={`glass card-lift group flex h-full flex-col rounded-2xl p-6 text-left ${
-        cert.featured ? "border border-[var(--accent)] shadow-[0_0_0_1px_var(--accent)]" : ""
-      }`}
+      onPointerMove={trackSpotlight}
+      style={{ "--card-accent": accent } as React.CSSProperties}
+      className="lab-card card-lift group flex h-full flex-col rounded-2xl p-6 text-left"
       aria-haspopup="dialog"
     >
-      <div className="flex items-start justify-between gap-3">
-        <BadgeCheck className="h-5 w-5 text-[var(--accent)]" aria-hidden="true" />
+      <span className="lab-spotlight" aria-hidden="true" />
+      <span
+        className="lab-index pointer-events-none absolute -right-1 -top-3 text-[72px] opacity-70"
+        aria-hidden="true"
+      >
+        {String(index).padStart(2, "0")}
+      </span>
+
+      <div className="relative flex items-start justify-between gap-3">
+        <BadgeCheck className="h-5 w-5" style={{ color: accent }} aria-hidden="true" />
         {cert.featured && (
-          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--accent-fill)] px-2.5 py-0.5 font-mono-tag text-[10px] uppercase tracking-[0.12em] text-white">
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono-tag text-[10px] uppercase tracking-[0.12em] text-white"
+            style={{ background: accent }}
+          >
             <Sparkles className="h-3 w-3" aria-hidden="true" /> Featured
           </span>
         )}
       </div>
-      <h3 className="mt-4 font-display text-lg font-semibold leading-snug text-[var(--text)]">{cert.name}</h3>
-      <p className="mt-1 text-sm text-[var(--text-muted)]">{cert.issuer}</p>
+      <h3 className="title-underline relative mt-4 font-display text-lg font-semibold leading-snug text-[var(--text)]">
+        {cert.name}
+      </h3>
+      <p className="relative mt-1 text-sm text-[var(--text-muted)]">{cert.issuer}</p>
       {(cert.issueDate || cert.expiryDate) && (
-        <p className="mt-4 font-mono-tag text-[11px] uppercase tracking-wider text-[var(--text-faint)]">
+        <p className="relative mt-4 font-mono-tag text-[11px] uppercase tracking-wider text-[var(--text-faint)]">
           {[fmt(cert.issueDate), cert.expiryDate ? `→ ${fmt(cert.expiryDate)}` : "No expiry"].filter(Boolean).join(" ")}
         </p>
       )}
-      <span className="mt-auto pt-5 text-[13px] font-medium text-[var(--accent)]">View credential</span>
+      <span className="relative mt-auto inline-flex items-center gap-1.5 pt-5 text-[13px] font-medium transition-colors" style={{ color: accent }}>
+        View credential
+        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+      </span>
     </button>
   );
 }
 
-function CertDetail({ cert }: { cert: Certification }) {
+function CertDetail({ cert, accent }: { cert: Certification; accent: string }) {
   const issued = fmt(cert.issueDate);
   const expires = fmt(cert.expiryDate);
   const hasDetails = Boolean(issued || expires || cert.credentialId);
   return (
     <div className="p-6 sm:p-8">
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-1 rounded-t-2xl"
+        style={{ background: `linear-gradient(90deg, ${accent}, transparent)` }}
+      />
       <p id="cert-modal-title" className="overline-label">
         Credential detail
       </p>
@@ -96,13 +148,29 @@ function CertDetail({ cert }: { cert: Certification }) {
       <p className="mt-1 text-sm text-[var(--text-muted)]">{cert.issuer}</p>
 
       {cert.image && (
-        <img
-          src={cert.image}
-          alt={`${cert.name} badge`}
-          loading="lazy"
-          decoding="async"
-          className="mt-6 max-h-56 rounded-xl border border-[var(--border)] object-contain"
-        />
+        <div className="mt-6 overflow-hidden rounded-xl border border-[var(--border)]">
+          <img
+            src={cert.image}
+            alt={cert.imageAlt ?? `${cert.name} badge`}
+            loading="lazy"
+            decoding="async"
+            className="max-h-56 w-full object-contain"
+          />
+          {cert.images && cert.images.length > 0 && (
+            <div>
+              {cert.images.map((imgSrc, i) => (
+                <img
+                  key={imgSrc}
+                  src={imgSrc}
+                  alt={cert.imageAlts?.[i] ?? `${cert.name} certificate (page ${i + 2})`}
+                  loading="lazy"
+                  decoding="async"
+                  className="max-h-56 w-full border-t border-[var(--border)] object-contain"
+                />
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
       {hasDetails && (

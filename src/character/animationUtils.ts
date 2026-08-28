@@ -35,19 +35,14 @@ const setAnimations = (gltf: GLTF) => {
     const introAction = mixer.clipAction(introClip);
     introAction.setLoop(THREE.LoopOnce, 1);
     introAction.clampWhenFinished = true;
-    // Cross-fade IN over ~0.5s: blends smoothly on top of the looping idle
-    // clips instead of hard-snapping into them (which produced a jerky,
-    // half-posed hand-off at the moment the intro started).
-    introAction.reset().setEffectiveWeight(0).fadeIn(0.5).play();
-    // Cross-fade OUT when the cinematic finishes (it is clamped on its last
-    // frame until the fade completes), so control returns seamlessly to the
-    // idle/typing loop actions instead of popping back to the loop pose.
-    const onFinished = (e: THREE.Event & { action?: THREE.AnimationAction }) => {
-      if (e.action && e.action !== introAction) return;
-      introAction.fadeOut(0.8);
-      mixer.removeEventListener("finished", onFinished as never);
-    };
-    mixer.addEventListener("finished", onFinished as never);
+    // Keep the completed intro pose, just as Akash's hero does.  It is the
+    // face-and-shoulders composition; fading it out would restore the desk
+    // animation and hide the face behind the monitor.
+    introAction.reset().play();
+    window.setTimeout(() => {
+      const blink = gltf.animations.find((clip) => clip.name === "Blink");
+      if (blink) mixer.clipAction(blink).play().fadeIn(0.5);
+    }, 2500);
   }
 
   function hover(gltf: GLTF, hoverDiv: HTMLDivElement) {

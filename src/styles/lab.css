@@ -1,0 +1,98 @@
+/* ------------------------------------------------------------------ */
+/*  Tech Projects — "aurora console" dark theme                        */
+/*  Deep-space canvas with drifting accent auroras, a blueprint grid   */
+/*  fading from the hero, and accent-tinted glass product cards.       */
+/* ------------------------------------------------------------------ */
+
+.lab-page-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+/* blueprint grid, strongest at the top of the page */
+.lab-page-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(245, 245, 243, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 245, 243, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse 95% 60% at 50% 0%, #000 0%, transparent 80%);
+  mask-image: radial-gradient(ellipse 95% 60% at 50% 0%, #000 0%, transparent 80%);
+}
+
+/* slow aurora drift */
+.lab-aurora {
+  animation: lab-aurora-drift 16s ease-in-out infinite alternate;
+}
+@keyframes lab-aurora-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, 6%, 0) scale(1.12);
+  }
+}
+
+/* product card — dark glass tinted by the project accent (--card-accent) */
+.lab-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--card-accent) 9%, transparent),
+      transparent 42%
+    ),
+    var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.05),
+    0 20px 44px -26px rgba(0, 0, 0, 0.8);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.35s ease;
+}
+
+.lab-card:hover {
+  border-color: color-mix(in srgb, var(--card-accent) 48%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+    0 26px 60px -26px color-mix(in srgb, var(--card-accent) 55%, transparent);
+}
+
+/* cursor spotlight tinted with the project accent (--mx/--my set in JS) */
+.lab-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--card-accent) 16%, transparent),
+    transparent 70%
+  );
+}
+
+.lab-card:hover .lab-spotlight,
+.lab-card:focus-within .lab-spotlight {
+  opacity: 1;
+}
+
+/* ghost index numeral, tinted with the project accent */
+.lab-index {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  color: color-mix(in srgb, var(--card-accent) 30%, transparent);
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-aurora {
+    animation: none;
+  }
+}

@@ -1,0 +1,55 @@
+/* ------------------------------------------------------------------ */
+/* 3D scroll stage (imported by Scene.tsx)                             */
+/* The canvas follows the viewport (desktop) while Landing +           */
+/* SelectedWork scroll past, and Scene fades it out via inline         */
+/* opacity exactly when Technical Ecosystem reaches the top.           */
+/* On mobile it stays absolute so it scrolls away with the hero,       */
+/* preserving the old behaviour plus the gradient masks.               */
+/* ------------------------------------------------------------------ */
+.character-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@media screen and (min-width: 1025px) {
+  .character-stage {
+    position: fixed;
+  }
+}
+
+/* The eyebrow-hover hotspot may only grab pointer events while parked in
+   the hero — Scene toggles .is-hero based on scroll progress. */
+.character-stage .character-hover {
+  pointer-events: none;
+}
+
+.character-stage.is-hero .character-hover {
+  pointer-events: auto;
+}
+
+/* The old mobile fade masks belong to the second scene's scroll-away
+   treatment.  While Akash's opening portrait is active they would slice the
+   face below the cap, so keep the first scene completely unobscured.  The
+   masks automatically return once scrolling hands off to the existing scene. */
+.character-stage.is-hero .character-model::after,
+.character-stage.is-hero .character-model::before {
+  display: none;
+}
+
+/* The landing text layers paint above the stage but must not swallow the
+   mouse events meant for the 3D hover hotspot underneath. */
+.landing-section,
+.landing-container {
+  pointer-events: none;
+}
+
+.landing-intro,
+.landing-info {
+  pointer-events: auto;
+}

@@ -114,7 +114,14 @@ export interface Certification {
   expiryDate: string | null;
   credentialId: string | null;
   credentialUrl: string | null;
+  /** Primary badge image (first page for multi-page certificates). */
   image: string | null;
+  /** Optional alt text for the certificate image (for accessibility). */
+  imageAlt?: string | null;
+  /** Optional additional pages for multi-page certificates. */
+  images?: string[] | null;
+  /** Optional alt text for each additional page. */
+  imageAlts?: string[] | null;
   skills: string[];
   /** When true, the UI highlights this certification (user-designated). */
   featured?: boolean;

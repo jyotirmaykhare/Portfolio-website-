@@ -68,7 +68,9 @@ export const certifications: Certification[] = [
     credentialId: null,
     credentialUrl:
       "https://infyspringboard.onwingspan.com/web/en/app/toc/lex_auth_013009443190092817922301_shared/overview",
-    image: null,
+    image: "/certificates/infosys-springboard-react.jpg",
+    imageAlt:
+      "Learning Full Stack React — Infosys Springboard course completion certificate",
     featured: true,
     verificationWorking: false,
     skills: ["React", "JSX", "Components", "State & Props", "Hooks", "Routing", "API integration"],
@@ -82,18 +84,25 @@ export const certifications: Certification[] = [
         "link taken verbatim from the user's CSE121 CA2 academic submission. Course " +
         "covers building complete full-stack applications with React — components, " +
         "JSX, state and props, hooks, routing and UI logic — plus server-side " +
-        "integration with APIs, backend services and databases.",
+        "integration with APIs, backend services and databases. Certificate scan " +
+        "provided by the user is attached as the badge asset.",
     },
   },
   {
-    name: "CS105: Introduction to Python — Saylor Academy",
+        name: "CS105: Introduction to Python — Saylor Academy",
     issuer: "Saylor Academy",
     issueDate: null,
     expiryDate: null,
     credentialId: null,
     credentialUrl:
       "https://learn.saylor.org/mod/coursecertificate/view.php?id=59017",
-    image: null,
+        image: "/certificates/saylor-python-1.jpg",
+    imageAlt:
+      "CS105: Introduction to Python — Saylor Academy course completion certificate (page 1 of 2)",
+    images: ["/certificates/saylor-python-2.jpg"],
+    imageAlts: [
+      "CS105: Introduction to Python — Saylor Academy course completion certificate (page 2 of 2)",
+    ],
     verificationWorking: false,
     skills: ["Python", "Programming fundamentals", "Problem solving"],
     source: {
@@ -104,24 +113,26 @@ export const certifications: Certification[] = [
       note:
         "Course completion certificate for Saylor Academy CS105: Introduction to " +
         "Python. Verification link taken verbatim from the user's CSE121 MOOC " +
-        "academic submission (the page itself is login-walled).",
+        "academic submission (the page itself is login-walled). Certificate scan " +
+        "attached by the user as the badge asset.",
     },
   },
-  {
+    {
     name: "Productivity Time Management Mastery",
     issuer: "Mindluster",
     issueDate: null,
     expiryDate: null,
     credentialId: null,
     credentialUrl: "https://www.mindluster.com/profile#c_courses",
-    image: null,
+    image: "/certificates/mindluster-time-management.jpg",
     verificationWorking: true,
     skills: [],
     source: {
       ...userProvidedSource,
       note:
         "Non-technical MOOC course completed on Mindluster. Issue/expiry dates " +
-        "and credential ID were not provided and remain unknown.",
+        "and credential ID were not provided and remain unknown. A certificate " +
+        "scan was provided by the user and is attached as the badge asset.",
     },
   },
 ];

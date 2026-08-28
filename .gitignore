@@ -7,3 +7,9 @@ dist-ssr
 .vite
 
 tsconfig.tsbuildinfo
+
+# Local screenshot/verification artifacts
+/*.png
+/*.log
+*.cjs
+

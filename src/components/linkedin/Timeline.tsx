@@ -1,8 +1,7 @@
 import { Briefcase, GraduationCap } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { NeedsInput } from "@/components/linkedin/shared";
+import { ConfidenceDot, NeedsInput } from "@/components/linkedin/shared";
 import { collectionNotes, education, experience } from "@/data/linkedin";
 
 /** Shared timeline shell — vertical rail with node dots. */
@@ -10,23 +9,37 @@ function Rail({ children }: { children: React.ReactNode }) {
   return <ol className="relative ml-2 border-l border-[var(--border)] pl-8">{children}</ol>;
 }
 
-function Node({ icon: Icon, title, meta, children }: {
+function Node({ icon: Icon, title, meta, badge, children }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   meta: string | null;
+  badge?: string | null;
   children?: React.ReactNode;
 }) {
   return (
-    <li className="relative pb-10 last:pb-0">
+    <li className="group relative pb-8 last:pb-0">
       <span
         aria-hidden="true"
-        className="absolute -left-[41px] top-1 grid h-5 w-5 place-items-center rounded-full border border-[var(--border-strong)] bg-[var(--bg-elevated)] text-[var(--accent)]"
+        className="absolute -left-[41px] top-1 grid h-5 w-5 place-items-center rounded-full border border-[var(--border-strong)] bg-[var(--bg-elevated)] text-[var(--accent)] transition-colors group-hover:border-[var(--accent)]"
       >
         <Icon className="h-3 w-3" />
       </span>
-      <h3 className="font-display text-lg font-semibold text-[var(--text)]">{title}</h3>
-      {meta && <p className="mt-1 font-mono-tag text-[12px] uppercase tracking-wider text-[var(--text-faint)]">{meta}</p>}
-      {children}
+      <div className="card-lift rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-6 transition-colors group-hover:border-[var(--accent)]">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <h3 className="font-display text-lg font-semibold text-[var(--text)]">{title}</h3>
+          {badge && (
+            <span className="inline-flex shrink-0 items-center rounded-full bg-[var(--accent-soft)] px-3 py-1 font-mono-tag text-[10px] uppercase tracking-[0.12em] text-[var(--accent)]">
+              {badge}
+            </span>
+          )}
+        </div>
+        {meta && (
+          <p className="mt-1.5 font-mono-tag text-[12px] uppercase tracking-wider text-[var(--text-faint)]">
+            {meta}
+          </p>
+        )}
+        {children}
+      </div>
     </li>
   );
 }
@@ -37,17 +50,27 @@ export function ExperienceTimeline() {
     <section id="experience" className="section-band border-b border-[var(--border)]">
       <Container className="py-20">
         <Reveal>
-          <SectionHeading eyebrow="Experience" title="Roles" />
+          <div className="flex items-end justify-between gap-6">
+            <h2 className="type-h3 text-[var(--text)]">Experience</h2>
+            <span className="font-mono-tag text-[11px] uppercase tracking-wider text-[var(--text-faint)]">
+              {experience.length} role{experience.length === 1 ? "" : "s"} on record
+            </span>
+          </div>
         </Reveal>
         <div className="mt-10">
           {experience.length > 0 ? (
             <Reveal delay={0.06}>
               <Rail>
                 {experience.map((e) => (
-                  <Node key={e.title} icon={Briefcase} title={e.title} meta={e.employmentType}>
-                    {e.company && <p className="mt-1 text-sm text-[var(--text-muted)]">{e.company}</p>}
+                  <Node
+                    key={e.title}
+                    icon={Briefcase}
+                    title={e.title}
+                    meta={e.employmentType}
+                    badge={e.company}
+                  >
                     {e.description && (
-                      <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--text-muted)]">
+                      <p className="mt-3 text-[15px] leading-relaxed text-[var(--text-muted)]">
                         {e.description}
                       </p>
                     )}
@@ -76,7 +99,10 @@ export function EducationTimeline() {
     <section id="education" className="section-band border-b border-[var(--border)]">
       <Container className="py-20">
         <Reveal>
-          <SectionHeading eyebrow="Education" title="Study" />
+          <div className="flex items-end justify-between gap-6">
+            <h2 className="type-h3 text-[var(--text)]">Education</h2>
+            <ConfidenceDot confidence="user_provided" label="Resume-confirmed" />
+          </div>
         </Reveal>
         <div className="mt-10">
           {education.length > 0 ? (
@@ -85,16 +111,16 @@ export function EducationTimeline() {
                 {education.map((e) => {
                   const span =
                     e.startDate && e.endDate
-                      ? `${e.startDate.slice(0, 4)} – ${e.endDate.slice(0, 4)}${e.current ? " (expected)" : ""}`
+                      ? `${e.startDate.slice(0, 4)} – ${e.endDate.slice(0, 4)}`
                       : null;
                   return (
-                    <Node key={e.institution} icon={GraduationCap} title={e.institution} meta={span}>
-                      {(e.degree || e.fieldOfStudy) && (
-                        <p className="mt-1 text-sm text-[var(--text-muted)]">
-                          {[e.degree, e.fieldOfStudy].filter(Boolean).join(" · ")}
-                        </p>
-                      )}
-                    </Node>
+                    <Node
+                      key={e.institution}
+                      icon={GraduationCap}
+                      title={e.institution}
+                      meta={[e.degree, e.fieldOfStudy].filter(Boolean).join(" · ") || null}
+                      badge={span ? `${span}${e.current ? " · current" : ""}` : null}
+                    />
                   );
                 })}
               </Rail>
@@ -105,3 +131,4 @@ export function EducationTimeline() {
     </section>
   );
 }
+
