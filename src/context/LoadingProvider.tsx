@@ -21,20 +21,22 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
 
   // Drive the counter to 100% reliably on every route so the loader always
   // completes (on the home page the 3D scene adds its own progress after).
+  // Tuned to be snappy (~2.5–3s) so the boot screen never outlives the
+  // real asset work happening behind it.
   useEffect(() => {
     let percent = 0;
     const interval = setInterval(() => {
       if (percent <= 70) {
-        percent += Math.round(Math.random() * 4 + 1);
+        percent += Math.round(Math.random() * 3 + 2);
       } else {
-        percent += Math.round(Math.random() * 2);
+        percent += Math.round(Math.random() * 4 + 2);
       }
       if (percent >= 100) {
         percent = 100;
         clearInterval(interval);
       }
       setLoading(percent);
-    }, 120);
+    }, 90);
     return () => clearInterval(interval);
   }, []);
 
