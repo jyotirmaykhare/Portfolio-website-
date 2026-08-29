@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.com/config",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
