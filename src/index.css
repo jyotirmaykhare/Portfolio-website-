@@ -661,3 +661,80 @@ main.main-active {
   }
 }
 
+/* ------------------------------------------------------------------ */
+/*  Mobile & all-device optimizations                                  */
+/*  - hard-stop horizontal scroll and let long tokens wrap safely     */
+/*  - throttle GPU-heavy blur on phones / tablets                      */
+/*  - disable desktop-only hover transforms & sweeps on touch          */
+/*  - notch-safe fixed bars via env(safe-area-inset-*)                */
+/* ------------------------------------------------------------------ */
+
+html {
+  /* Fallback + modern: clips any fixed/absolute bleed that would add a
+     horizontal scrollbar on small viewports. */
+  overflow-x: hidden;
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  /* Long URLs, emails, mono tags and project names can never push the
+     page horizontal — they wrap within their container instead. */
+  overflow-wrap: break-word;
+}
+
+/* Fixed header clears device notches (evaluates to 0 everywhere else).
+   The main content offset is bumped to match so nothing hides beneath. */
+header {
+  padding-top: env(safe-area-inset-top);
+}
+main#main {
+  padding-top: calc(4rem + env(safe-area-inset-top));
+}
+
+/* Touch devices: hover lifts, shine sweeps and cursor spotlights are
+   desktop-only theatre — kill their intent (and occasional sticky-hover
+   flicker) so taps feel immediate. */
+@media (hover: none) {
+  .card-lift:hover,
+  .lab-card:hover,
+  .keep-card:hover {
+    transform: none !important;
+  }
+  .keep-card::before,
+  .lab-spotlight {
+    display: none;
+  }
+}
+
+@media (pointer: coarse) {
+  /* Pause the 55–85s background pan + giant orb drift on touch — the
+     fixed gradients stay put, only the constant repaint goes away. */
+  .home-canvas,
+  .home-canvas::before,
+  .home-canvas::after {
+    animation: none;
+  }
+}
+
+/* Small screens: trim the heaviest blur sizes so low-end GPUs can hold
+   60fps scrolling without the fog smearing. */
+@media (max-width: 767px) {
+  .home-canvas::before,
+  .home-canvas::after {
+    width: 220px;
+    height: 220px;
+    filter: blur(56px);
+  }
+  .glass {
+    backdrop-filter: blur(10px) saturate(1.3);
+    -webkit-backdrop-filter: blur(10px) saturate(1.3);
+  }
+  .boot-aurora {
+    filter: blur(56px);
+  }
+  .boot-console {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+}

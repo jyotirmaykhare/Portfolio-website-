@@ -40,7 +40,11 @@ const Scene = () => {
     let rect = containerEl.getBoundingClientRect();
 
     renderer.setSize(rect.width, rect.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Phones don't need 2× supersampling on a full-page canvas — 1.5× keeps
+    // the character crisp while roughly halving GPU fill rate (battery +
+    // sustained frame rate on low-end devices).
+    const maxDpr = window.innerWidth < 768 ? 1.5 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxDpr));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
     containerEl.appendChild(renderer.domElement);

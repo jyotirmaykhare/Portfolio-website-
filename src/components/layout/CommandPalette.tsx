@@ -181,9 +181,9 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
           <span className="inline-flex items-center gap-1">
             <Command className="h-3 w-3" /> K
           </span>
-          <span>↑↓ to navigate</span>
-          <span>↵ to select</span>
-          <span className="ml-auto inline-flex items-center gap-1 text-[var(--text-muted)]">
+          <span className="hidden sm:inline">↑↓ to navigate</span>
+          <span className="hidden sm:inline">↵ to select</span>
+          <span className="ml-auto hidden items-center gap-1 text-[var(--text-muted)] sm:inline-flex">
             <Wrench className="h-3 w-3" /> Build with intent
           </span>
         </div>
