@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # Sitemap - referenced by Google, Bing, Yandex and other crawlers
-Sitemap: https://jyotirmaykhare.dev/sitemap.xml
+Sitemap: https://jyotirmaykhare.vercel.app/sitemap.xml

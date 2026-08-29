@@ -8,7 +8,7 @@ export const site = {
   linkedin: "https://www.linkedin.com/in/jyotirmay-khare",
   /** Future-ready: a resume may be added later. Keep empty until a real file exists. */
   resume: "",
-  url: "https://jyotirmaykhare.dev",
+  url: "https://jyotirmaykhare.vercel.app",
 } as const;
 
 export const socialLinks = [

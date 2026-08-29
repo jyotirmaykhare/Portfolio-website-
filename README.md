@@ -5,7 +5,7 @@ application. The site tells the full-stack story — frontend, backend, database
 cloud — wrapped in an interactive, dark “aurora-console” experience with a 3D
 character scene, a boot-sequence loading screen, and a ⌘K / Ctrl+K command palette.
 
-> 🔗 **Live site:** <https://jyotirmaykhare.dev/> — **Repo:** `jyotirmaykhare/Portfolio-website-`
+> 🔗 **Live site:** <https://jyotirmaykhare.vercel.app/> — **Repo:** `jyotirmaykhare/Portfolio-website-`
 
 ---
 
@@ -233,10 +233,11 @@ npm run prerender  # snapshots every route to dist/<route>/index.html
 
 ### Submitting to search engines
 
-After deploying, submit the sitemap (`https://jyotirmaykhare.dev/sitemap.xml`):
+After deploying, submit the sitemap (`https://jyotirmaykhare.vercel.app/sitemap.xml`):
 
 1. **Google Search Console** — <https://search.google.com/search-console> →
-   verify `jyotirmaykhare.dev` (Domain property via DNS TXT is strongest) →
+   verify `jyotirmaykhare.vercel.app` (URL-prefix property; the HTML
+   verification file in `public/` covers this) →
    *Sitemaps* → enter `sitemap.xml` → Submit.
 2. **Bing Webmaster Tools** — <https://www.bing.com/webmasters> → verify the
    site (import from Google Search Console or DNS CNAME) → *Sitemaps* → submit.
@@ -252,7 +253,7 @@ No manual resubmission is needed afterwards — crawlers re-read `robots.txt`
 
 **Jyotirmay Khare** — Full Stack Developer
 
-- 🌐 <https://jyotirmaykhare.dev/>
+- 🌐 <https://jyotirmaykhare.vercel.app/>
 - GitHub: <https://github.com/jyotirmaykhare>
 - LinkedIn: <https://www.linkedin.com/in/jyotirmay-khare>
 - ✉️ <mailto:jyotirmaykhare@gmail.com>

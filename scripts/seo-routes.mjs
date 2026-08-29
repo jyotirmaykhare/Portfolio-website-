@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-export const SITE_URL = "https://jyotirmaykhare.dev";
+export const SITE_URL = "https://jyotirmaykhare.vercel.app";
 
 export function getProjectSlugs() {
   const src = readFileSync(resolve(ROOT, "src/data/projects.ts"), "utf8");
