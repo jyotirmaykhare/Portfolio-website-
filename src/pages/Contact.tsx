@@ -17,6 +17,7 @@ import { useMagnetic } from "@/hooks/useMagnetic";
 import { useTilt } from "@/hooks/useTilt";
 import { site } from "@/data/site";
 import { WhatsAppIcon } from "@/components/ui/BrandIcons";
+import { Seo } from "@/components/Seo";
 
 interface Channel {
   label: string;
@@ -201,6 +202,11 @@ export function ContactPage() {
 
   return (
     <div className="section-pad section-band relative overflow-hidden">
+      <Seo
+        title="Contact Jyotirmay Khare — Full Stack Developer"
+        description="Get in touch with Jyotirmay Khare, full stack developer. Reach out via email, WhatsApp, phone, GitHub or LinkedIn for hiring, internships and collaborations. Based in Jalandhar, Punjab, India."
+        path="/contact"
+      />
       {/* Ambient aurora + accent glow behind the whole page */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-48 right-[-8%] h-[420px] w-[420px] rounded-full bg-[var(--accent-soft)] blur-[130px]" />

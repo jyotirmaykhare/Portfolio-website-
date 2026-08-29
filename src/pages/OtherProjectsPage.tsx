@@ -15,6 +15,7 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { certifications, experience } from "@/data/linkedin";
 import { projects } from "@/data/projects";
+import { Seo } from "@/components/Seo";
 import "@/styles/lab.css";
 
 /**
@@ -42,6 +43,11 @@ export function OtherProjectsPage() {
 
   return (
     <div className="lab-page-shell section-pad">
+      <Seo
+        title="Other Projects — Game Dev, IoT & Hackathons | Jyotirmay Khare"
+        description="Hardware, IoT and game development projects by Jyotirmay Khare — Arduino sensor builds, Godot Engine game development and national-level hackathon work including Code-A-Haunt 3.0."
+        path="/projects/other"
+      />
       {/* drifting auroras behind the content */}
       <div
         aria-hidden="true"

@@ -173,8 +173,11 @@ The dev server runs with `server.host: true` so both IPv4 (`127.0.0.1`) and IPv6
 | Script          | Description                             |
 | --------------- | --------------------------------------- |
 | `npm run dev`     | Start Vite dev server                   |
-| `npm run build`   | Type-check (`tsc -b`) then `vite build` |
+| `npm run seo`     | Regenerate `public/sitemap.xml` + `public/robots.txt` from the data layer (runs automatically before every build) |
+| `npm run og:image`| Re-render the 1200×630 social preview image to `public/og-image.png` (only needed after editing `scripts/og-template.html`) |
+| `npm run build`   | Regenerate SEO files, type-check (`tsc -b`), then `vite build` |
 | `npm run preview` | Preview the production build            |
+| `npm run prerender`| Prerender every route to static HTML in `dist/` (run after `npm run build`) |
 | `npm run lint`    | Run ESLint over the project             |
 
 ---
@@ -197,10 +200,51 @@ The dev server runs with `server.host: true` so both IPv4 (`127.0.0.1`) and IPv6
 
 The site is a static Vite build (`npm run build`) that can be deployed to any
 static host (Vercel, Netlify, Cloudflare Pages, Railway, AWS S3/CloudFront …).
-SEO assets are baked in via `index.html` (Open Graph, Twitter cards, JSON-LD
-`Person`/`WebSite` schemas, canonical URL) plus `public/sitemap.xml` and
-`public/robots.txt`. For client-side routing on static hosts, ensure unknown paths
-are rewritten to `index.html` (SPA fallback).
+
+**Recommended production flow:**
+
+```bash
+npm run build      # regenerates sitemap.xml + robots.txt, type-checks, bundles
+npm run prerender  # snapshots every route to dist/<route>/index.html
+```
+
+### SEO architecture
+
+- **Prerendering** — the app is a client-side rendered SPA behind a boot
+  loading screen, so raw-HTML crawlers (Bing, Yandex, link-preview bots) would
+  otherwise see an empty `<div id="root">`. `npm run prerender` writes fully
+  rendered HTML for every route into `dist/`; static hosts serve these files
+  directly (filesystem wins over the SPA fallback rewrite), so every search
+  engine gets real content instantly. Re-run it after every build that changes
+  content.
+- **Per-route meta** — `src/components/Seo.tsx` keeps `<title>`, description,
+  canonical URL, Open Graph and Twitter tags in sync with the active route;
+  project pages also emit `BreadcrumbList` JSON-LD.
+- **Sitemap & robots** — `scripts/generate-seo.mjs` derives the sitemap from
+  `src/data/projects.ts` (with `lastmod`), so new projects are indexed
+  automatically; `robots.txt` points all crawlers at the sitemap.
+- **Social preview** — `public/og-image.png` (1200×630, generated from
+  `scripts/og-template.html`) is referenced by the `og:image` / `twitter:image`
+  tags in `index.html`.
+- Static `index.html` also carries sitewide Open Graph, Twitter cards and
+  JSON-LD `Person`/`WebSite` schemas. For client-side routing on static hosts,
+  ensure unknown paths are rewritten to `index.html` (SPA fallback — see
+  `vercel.json`).
+
+### Submitting to search engines
+
+After deploying, submit the sitemap (`https://jyotirmaykhare.dev/sitemap.xml`):
+
+1. **Google Search Console** — <https://search.google.com/search-console> →
+   verify `jyotirmaykhare.dev` (Domain property via DNS TXT is strongest) →
+   *Sitemaps* → enter `sitemap.xml` → Submit.
+2. **Bing Webmaster Tools** — <https://www.bing.com/webmasters> → verify the
+   site (import from Google Search Console or DNS CNAME) → *Sitemaps* → submit.
+   Bing also feeds Yahoo and DuckDuckGo.
+3. **Yandex Webmaster** (optional) — <https://webmaster.yandex.com> → same flow.
+
+No manual resubmission is needed afterwards — crawlers re-read `robots.txt`
+(which advertises the sitemap) on every visit.
 
 ---
 

@@ -6,8 +6,12 @@
   "description": "Personal developer portfolio for Jyotirmay Khare",
   "scripts": {
     "dev": "vite",
+    "seo": "node scripts/generate-seo.mjs",
+    "og:image": "node scripts/generate-og-image.mjs",
+    "prebuild": "node scripts/generate-seo.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "prerender": "node scripts/prerender.mjs",
     "lint": "eslint ."
   },
   "dependencies": {

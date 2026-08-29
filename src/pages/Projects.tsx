@@ -3,6 +3,7 @@ import { ArrowRight, Cpu, FolderGit2, Trophy } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { Seo } from "@/components/Seo";
 
 /**
  * /projects — overview hub. The detailed listings live on their own pages
@@ -12,6 +13,11 @@ import { Reveal } from "@/components/ui/Reveal";
 export function ProjectsPage() {
   return (
     <div className="section-pad section-band">
+      <Seo
+        title="Projects — Jyotirmay Khare | Full Stack Developer Portfolio"
+        description="Browse the project portfolio of Jyotirmay Khare — deployed software products, hardware builds, game development and hackathon projects with live demos and open-source code."
+        path="/projects"
+      />
       <Container>
         <Reveal>
           <SectionHeading

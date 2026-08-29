@@ -12,6 +12,7 @@ import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { Seo } from "@/components/Seo";
 import { profile, education } from "@/data/linkedin";
 import { ecosystems } from "@/data/skills";
 
@@ -37,6 +38,11 @@ export function AboutPage() {
 
   return (
     <div className="section-pad section-band">
+      <Seo
+        title="About Jyotirmay Khare — Full Stack Developer"
+        description="Learn about Jyotirmay Khare — a full stack developer working across React, TypeScript, Flask, Node.js, PostgreSQL and MongoDB, deploying to Vercel, Netlify and AWS. B.Tech CSE at Lovely Professional University."
+        path="/about"
+      />
       <Container>
         {/* Identity header */}
         <Reveal>

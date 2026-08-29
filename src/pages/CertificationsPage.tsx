@@ -2,6 +2,7 @@ import { BadgeCheck } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { CertificationVault } from "@/components/linkedin/CertificationVault";
+import { Seo } from "@/components/Seo";
 import "@/styles/lab.css";
 
 /**
@@ -13,6 +14,11 @@ import "@/styles/lab.css";
 export function CertificationsPage() {
   return (
     <div className="lab-page-shell">
+      <Seo
+        title="Certifications — Verified Proof of Work | Jyotirmay Khare"
+        description="Verified certifications and hackathon achievements of Jyotirmay Khare — view certificate images and verification links from Infosys Springboard, Saylor Academy and more."
+        path="/certifications"
+      />
       {/* drifting auroras */}
       <div
         aria-hidden="true"

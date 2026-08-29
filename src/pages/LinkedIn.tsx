@@ -12,6 +12,7 @@ import { ProjectsPosts } from "@/components/linkedin/ProjectsPosts";
 import { Explorers } from "@/components/linkedin/Explorers";
 import { Analytics } from "@/components/linkedin/Analytics";
 import { FollowCta } from "@/components/linkedin/FollowCta";
+import { Seo } from "@/components/Seo";
 
 /**
  * /linkedin — Professional Archive.
@@ -34,6 +35,11 @@ const LINKEDIN_THEME = {
 export function LinkedInPage() {
   return (
     <div style={LINKEDIN_THEME}>
+      <Seo
+        title="Professional Archive — Jyotirmay Khare | LinkedIn Profile"
+        description="Professional archive of Jyotirmay Khare — experience, education, certifications, posts and projects, modeled on the public LinkedIn profile."
+        path="/linkedin"
+      />
       {/* Brand banner */}
       <div
         className="relative flex items-center justify-center gap-3 border-b border-white/10 py-2.5"

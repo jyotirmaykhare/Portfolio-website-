@@ -16,6 +16,7 @@ import { useTilt } from "@/hooks/useTilt";
 import { projects } from "@/data/projects";
 import type { Project } from "@/types";
 import { cn } from "@/lib/utils";
+import { Seo } from "@/components/Seo";
 import "@/styles/lab.css";
 
 /**
@@ -53,6 +54,11 @@ export function TechProjectsPage() {
 
   return (
     <div className="lab-page-shell section-pad">
+      <Seo
+        title="Tech Projects — Live Products & Open Source | Jyotirmay Khare"
+        description="Explore deployed, open-source tech projects by Jyotirmay Khare — WaveBeats, TradeScope Pro, PriceRadar, LPU Navigator, Status Radar and PostgreSQL Mastery, with live demos and case studies."
+        path="/projects/tech"
+      />
       {/* drifting aurora washes behind the canvas */}
       <div
         aria-hidden="true"

@@ -3,10 +3,16 @@ import { ArrowLeft, Compass } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { Seo } from "@/components/Seo";
 
 export function NotFoundPage() {
   return (
     <div className="section-pad">
+      <Seo
+        title="Page not found | Jyotirmay Khare"
+        description="The route you're looking for doesn't exist. Head back to the portfolio home page or explore the projects."
+        noindex
+      />
       <Reveal>
       <Container className="max-w-2xl text-center">
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)]">

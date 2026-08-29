@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { ProjectVisual } from "@/components/home/ProjectVisual";
 import { getProject, projects } from "@/data/projects";
+import { site } from "@/data/site";
 import type { Project } from "@/types";
+import { Seo } from "@/components/Seo";
 
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -17,6 +19,11 @@ export function ProjectDetailPage() {
   if (!project) {
     return (
       <div className="section-pad">
+        <Seo
+          title="Project not found | Jyotirmay Khare"
+          description="The project you're looking for doesn't exist or has moved. Explore the full project portfolio instead."
+          path={`/projects${slug ? `/${slug}` : ""}`}
+        />
         <Container className="max-w-xl">
           <h1 className="font-display text-3xl font-semibold text-[var(--text)]">Project not found</h1>
           <p className="mt-4 text-[var(--text-muted)]">
@@ -34,6 +41,30 @@ export function ProjectDetailPage() {
 
   return (
     <article>
+      <Seo
+        title={`${project.name} — ${project.category} | Jyotirmay Khare`}
+        description={`${project.category}. ${project.summary}`}
+        path={`/projects/${project.slug}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: isTech ? "Tech projects" : "Other projects",
+              item: `${site.url}${backTo}`,
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: project.name,
+              item: `${site.url}/projects/${project.slug}`,
+            },
+          ],
+        }}
+      />
       <Hero project={project} backTo={backTo} backLabel={backLabel} />
       <Visual project={project} />
       <Body project={project} backTo={backTo} backLabel={backLabel} />
